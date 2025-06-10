@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Gerador de Senhas</title>
+</head>
+<body>
+    <h1>Gerador de Senhas com HTML, Python e Java</h1>
+    <form action="/gerar" method="post">
+        <label>Tamanho:
+            <input type="number" name="tamanho" min="4" max="64" value="12" required>
+        </label><br><br>
+
+        <label><input type="checkbox" name="letras" checked> Letras (A-Z, a-z)</label><br>
+        <label><input type="checkbox" name="numeros" checked> Números (0-9)</label><br>
+        <label><input type="checkbox" name="simbolos"> Símbolos (!@#$...)</label><br><br>
+
+        <button type="submit">Gerar Senha</button>
+    </form>
+
+    {% if senha %}
+        <p><strong>Senha gerada:</strong> {{ senha }}</p>
+    {% endif %}
+</body>
+</html>
