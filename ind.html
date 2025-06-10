@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Gerador de Senhas</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+      max-width: 500px;
+    }
+    label {
+      display: block;
+      margin: 10px 0 5px;
+    }
+    .checkboxes label {
+      display: inline-block;
+      margin-right: 10px;
+    }
+    #senha {
+      font-size: 1.2em;
+      font-weight: bold;
+      margin-top: 20px;
+      color: green;
+    }
+    button {
+      margin-top: 15px;
+      padding: 10px 20px;
+      font-size: 1em;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Gerador de Senhas</h2>
+
+  <label for="comprimento">Comprimento da senha:</label>
+  <input type="number" id="comprimento" value="12" min="4" max="32">
+
+  <div class="checkboxes">
+    <label><input type="checkbox" id="maiusculas" checked> Maiúsculas</label>
+    <label><input type="checkbox" id="minusculas" checked> Minúsculas</label>
+    <label><input type="checkbox" id="numeros" checked> Números</label>
+    <label><input type="checkbox" id="simbolos"> Símbolos</label>
+  </div>
+
+  <button onclick="gerarSenha()">Gerar Senha</button>
+
+  <p id="senha">Sua senha aparecerá aqui.</p>
+
+  <script>
+    function gerarSenha() {
+      const comprimento = document.getElementById('comprimento').value;
+      const usarMaiusculas = document.getElementById('maiusculas').checked;
+      const usarMinusculas = document.getElementById('minusculas').checked;
+      const usarNumeros = document.getElementById('numeros').checked;
+      const usarSimbolos = document.getElementById('simbolos').checked;
+
+      let caracteres = '';
+      if (usarMaiusculas) caracteres += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+      if (usarMinusculas) caracteres += 'abcdefghijklmnopqrstuvwxyz';
+      if (usarNumeros) caracteres += '0123456789';
+      if (usarSimbolos) caracteres += '!@#$%^&*()_+{}[]|:;<>,.?/~';
+
+      if (!caracteres) {
+        document.getElementById('senha').textContent = 'Selecione ao menos um tipo de caractere!';
+        return;
+      }
+
+      let senha = '';
+      for (let i = 0; i < comprimento; i++) {
+        const randomIndex = Math.floor(Math.random() * caracteres.length);
+        senha += caracteres[randomIndex];
+      }
+
+      document.getElementById('senha').textContent = senha;
+    }
+  </script>
+
+</body>
+</html>

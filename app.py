@@ -1,33 +1,54 @@
-from flask import Flask, render_template, request
-import subprocess
+import random
+import string
+from IPython.display import display, HTML
+import ipywidgets as widgets
 
-app = Flask(__name__)
+# Função geradora de senhas
+def gerar_senha(comprimento, usar_maiusculas, usar_minusculas, usar_numeros, usar_simbolos):
+    caracteres = ""
+    if usar_maiusculas:
+        caracteres += string.ascii_uppercase
+    if usar_minusculas:
+        caracteres += string.ascii_lowercase
+    if usar_numeros:
+        caracteres += string.digits
+    if usar_simbolos:
+        caracteres += string.punctuation
 
-@app.route('/')
-def index():
-    return render_template('index.html')
+    if not caracteres:
+        return "Selecione ao menos um tipo de caractere!"
 
-@app.route('/gerar', methods=['POST'])
-def gerar():
-    tamanho = request.form.get('tamanho', '12')
-    letras = 'letras' in request.form
-    numeros = 'numeros' in request.form
-    simbolos = 'simbolos' in request.form
+    return ''.join(random.choice(caracteres) for _ in range(comprimento))
 
-    try:
-        # Chama o código Java passando os argumentos
-        resultado = subprocess.check_output([
-            'java', 'GeradorSenha',
-            tamanho,
-            str(letras),
-            str(numeros),
-            str(simbolos)
-        ])
-        senha = resultado.decode('utf-8').strip()
-    except subprocess.CalledProcessError:
-        senha = 'Erro ao gerar senha.'
+# Widgets de entrada
+comprimento_slider = widgets.IntSlider(value=12, min=4, max=32, description='Comprimento:')
+maiusculas_check = widgets.Checkbox(value=True, description='Maiúsculas')
+minusculas_check = widgets.Checkbox(value=True, description='Minúsculas')
+numeros_check = widgets.Checkbox(value=True, description='Números')
+simbolos_check = widgets.Checkbox(value=False, description='Símbolos')
 
-    return render_template('index.html', senha=senha)
+botao_gerar = widgets.Button(description='Gerar Senha')
+saida = widgets.Output()
 
-if __name__ == '__main__':
-    app.run(debug=True)
+# Função acionada ao clicar no botão
+def ao_clicar_botao(b):
+    senha = gerar_senha(
+        comprimento_slider.value,
+        maiusculas_check.value,
+        minusculas_check.value,
+        numeros_check.value,
+        simbolos_check.value
+    )
+    with saida:
+        saida.clear_output()
+        display(HTML(f"<p style='font-size:20px; color:green;'><b>Senha Gerada:</b> {senha}</p>"))
+
+botao_gerar.on_click(ao_clicar_botao)
+
+# Exibir interface
+display(widgets.VBox([
+    comprimento_slider,
+    widgets.HBox([maiusculas_check, minusculas_check, numeros_check, simbolos_check]),
+    botao_gerar,
+    saida
+]))
